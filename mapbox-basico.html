@@ -1,0 +1,60 @@
+<html lang="es">
+
+<head>
+    <title>Mapbox básico</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="autor" />
+    <meta name="description" content="descripción página">
+    <meta name="robots" content="index,follow">
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.css" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
+    <script>
+        var map; // tambien const map;
+        function init() {
+            mapboxgl.accessToken =
+                'pk.eyJ1IjoiZ2lzbWFzdGVybTIiLCJhIjoiY2plZHhubTQxMTNoYzMza3Rqa3kxYTdrOCJ9.53B1E6mKD_EQOVb2Y0-SsA';
+            map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/gismasterm2/clcz29984003x14qtkxbx8xcg',
+                center: [2.16859, 41.3954],
+                zoom: 13,
+                hash: true,
+                attributionControl: false
+            });
+
+
+            map.addControl(new mapboxgl.AttributionControl({
+                compact: true
+            }));
+            map.addControl(new mapboxgl.NavigationControl());
+            map.addControl(new mapboxgl.GeolocateControl({
+                positionOptions: {
+                    enableHighAccuracy: true
+                },
+                trackUserLocation: true
+            }));
+
+
+        } //fi funcion
+    </script>
+</head>
+
+<body onLoad="init()">
+    <div id="map"></div>
+</body>
+
+</html>
