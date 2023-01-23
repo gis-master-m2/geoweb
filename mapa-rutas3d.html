@@ -1,0 +1,66 @@
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>Mapa rutas 3D</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.css' rel='stylesheet' />
+    <link href='css/estilobase.css' rel='stylesheet' />
+
+    <script src='js/3d.js'></script>
+    <script src='js/rutas.js'></script>
+    <script>
+        //Añadir vuestor token!!
+        var map;
+
+        function init() {
+            mapboxgl.accessToken =
+                'pk.eyJ1IjoiZ2lzbWFzdGVybTIiLCJhIjoiY2plZHhubTQxMTNoYzMza3Rqa3kxYTdrOCJ9.53B1E6mKD_EQOVb2Y0-SsA';
+            map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/satellite-streets-v10',
+                center: [1.77878, 41.60044],
+                zoom: 14,
+                attributionControl: false,
+                pitch: 45,
+                projection: 'globe',
+                hash: true
+            });
+
+            map.addControl(new mapboxgl.AttributionControl({
+                compact: true
+            }));
+            map.addControl(new mapboxgl.NavigationControl());
+
+            map.on('load', function() {
+                add3D('mapbox-dem'); //mapbox-dem  o none
+                addRutas();
+
+            }); //fin onload         
+
+        } // final init
+    </script>
+</head>
+
+<body onload="init()">
+
+    <div class="panelTopIzquierda">
+        <select onChange="zoomToRutas(this.value)">
+            <option selected value="14/41.60044/1.77878">Ruta 1</option>
+            <option value="12.96/41.76589/2.30274">Ruta 2</option>
+            <option value="13.04/42.31892/3.26054">Ruta 3</option>
+        </select>
+        <hr>
+
+        <div>
+            <input type="radio" onClick="changeTerrain(this.value)" checked name="dem" value="mapbox-dem">Mapbox <br>
+            <input type="radio" onClick="changeTerrain(this.value)" name="dem" value="icgc-dem">ICGC <br>
+            <input type="radio" onClick="changeTerrain(this.value)" name="dem" value="none">2D
+        </div>
+    </div>
+
+    <div id="map"></div>
+</body>
+
+</html>
