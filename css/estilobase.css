@@ -10,14 +10,15 @@ body {
 
 .panelTopIzquierda {
     position: absolute;
-    top: 18px;
-    left: 20px;
-    width: 200px;
+    /* top: 18px; */
+    left: 1;
+    width: auto;
     z-index: 1000;
     background-color: rgba(255,255,255,0.9);
     padding: 10px;
     font-size: 20px;
     color: #bf2626;
+    bottom: 50px;
     border-radius: 5px;
 }
 

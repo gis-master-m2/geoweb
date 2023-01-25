@@ -129,8 +129,8 @@ function terremotosGeonamesToGeoJSON(respuestaGeonames){
             },
             'paint': {
                 'line-color': '#ff0000',
-                'line-width': 3,
-                'line-dasharray':[6.2,6.2]
+                'line-width': 3
+               
             }
         });
 
