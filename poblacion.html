@@ -4,22 +4,37 @@
     <meta charset='utf-8' />
     <title>Población</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+    <link id="manifest" rel="manifest" href="manifest-poblacion.json">
+
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.css' rel='stylesheet' />
 
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.3.0/mapbox-gl-draw.js'></script>
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.3.0/mapbox-gl-draw.css' type='text/css' />
+
     <script src="https://unpkg.com/flatgeobuf@3.24.0/dist/flatgeobuf-geojson.min.js"></script>
+    <!--
+  <script src="https://gis-master-m2.github.io/geoweb/js/flatgeobuf-geojson.min.js"></script>
+  -->
+
     <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
 
     <link href='css/estilobase.css' rel='stylesheet' />
 
     <script src='js/utils.js'></script>
-
+    <script src='js/poblacion.js'></script>
+    <script src='js/3d.js'></script>
 
     <script>
         //Añadir vuestor token y/o estilo !!
         var map;
+        var url = "./datos/kontur_population_CL_20220630.fgb";
+        var minZoom = 9;
+        var draw;
 
         function init() {
             mapboxgl.accessToken =
@@ -29,6 +44,7 @@
                 style: 'mapbox://styles/mapbox/satellite-streets-v11',
                 center: [2.16859, 41.3954],
                 zoom: 12,
+                projection: 'globe',
                 attributionControl: false,
                 hash: true
             });
@@ -43,15 +59,85 @@
                     accessToken: mapboxgl.accessToken,
                     mapboxgl: mapboxgl,
                     collapsed: true,
-                    countries: 'ES'
+                    countries: 'CL'
                 }));
+
+
+            draw = new MapboxDraw({
+                displayControlsDefault: false,
+                controls: {
+                    point: true,
+                    polygon: true,
+                    trash: true
+                }
+            });
+            map.addControl(draw);
+
+            map.on('draw.modechange', function(e) {
+                //solo una geometria en el mapa
+                var ff = draw.getAll();
+                if (ff.features.length == 2) {
+                    draw.delete(ff.features[0].id);
+                    borraBuffer();
+                }
+            });
+
+
+
+            map.on("load", function() {
+
+                add3D("mapbox-dem");
+
+                getFeaturesFGB(url, minZoom);
+                addWMS();
+                map.setFog({});
+                // addPopupToMap("hexagonos")
+            });
+
+            map.on("moveend", function() {
+                getFeaturesFGB(url, minZoom);
+            });
+
+            map.on("zoomend", function() {
+                getFeaturesFGB(url, minZoom);
+            });
+
+
+            map.on('draw.create', function(e) {
+                gestionCalculoPoblacion(e.features[0], minZoom);
+            });
+
+            map.on('draw.update', function(e) {
+                gestionCalculoPoblacion(e.features[0], minZoom);
+            });
+
 
         } // final init
     </script>
 </head>
 
 <body onload="init()">
+    <div class="panelTitulo">
+        <div>Población</div>
+        <div>
+            <img src="https://maps.wild-fire.eu/gwis?time=2023-02-05%2F2023-02-06&format=image/png&service=WMS&version=1.1.1&request=GetLegendGraphic&srs=EPSG:3857&transparent=true&width=512&height=512&layer=modis.hs&layers=modis.hs">
+        </div>
+    </div>
+    <div class="panelTopIzquierda">
+        <label id="pop"></label>
+    </div>
     <div id="map"></div>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker
+                .register('./sw.js')
+                .then(function() {
+                    console.log("Todo ok!");
+                }).catch(function(err) {
+                    console.log("Error", error)
+                })
+        }
+    </script>
 </body>
 
 </html>
