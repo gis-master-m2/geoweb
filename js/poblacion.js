@@ -28,7 +28,7 @@ async function getFeaturesFGB(urlDatos, minZoom) {
             paint: {
                 "fill-color": "#0000ff",
                 "fill-outline-color": "#ffffff",
-                "fill-opacity": 0.4, //trasparente
+                "fill-opacity": 0, //trasparente
             },
         });
 
