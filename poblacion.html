@@ -32,7 +32,7 @@
     <script>
         //Añadir vuestor token y/o estilo !!
         var map;
-        var url = "./datos/kontur_population_CL_20220630.fgb";
+        var url = "datos/kontur_population_ES_20220630.fgb";
         var minZoom = 9;
         var draw;
 
@@ -59,7 +59,7 @@
                     accessToken: mapboxgl.accessToken,
                     mapboxgl: mapboxgl,
                     collapsed: true,
-                    countries: 'CL'
+                    countries: 'ES'
                 }));
 
 
@@ -86,10 +86,10 @@
 
             map.on("load", function() {
 
-                add3D("mapbox-dem");
+                //add3D("mapbox-dem");
 
                 getFeaturesFGB(url, minZoom);
-                addWMS();
+               // addWMS();
                 map.setFog({});
                 // addPopupToMap("hexagonos")
             });
